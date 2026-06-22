@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>D.O.A.E. Terminal Workstation</title>
+    <style>
+        body {
+            background-color: #050505;
+            color: #d1d1d1;
+            font-family: 'Courier New', Courier, monospace;
+            padding: 20px;
+            font-size: 16px;
+            line-height: 1.4;
+            overflow-x: hidden;
+        }
+        #terminal-screen {
+            max-width: 800px;
+            margin: 0 auto;
+            text-shadow: 0 0 4px rgba(200, 200, 200, 0.3);
+        }
+        .error-text {
+            color: #ff3333;
+            text-shadow: 0 0 5px rgba(255, 51, 51, 0.5);
+        }
+        .weapon-text {
+            color: #33ccff;
+            text-shadow: 0 0 5px rgba(51, 204, 255, 0.5);
+        }
+        .audio-text {
+            color: #ffcc00;
+            text-shadow: 0 0 5px rgba(255, 204, 0, 0.5);
+        }
+        .input-line {
+            display: flex;
+            align-items: center;
+            margin-top: 15px;
+        }
+        .prompt {
+            white-space: pre;
+        }
+        #cmd-input {
+            background: transparent;
+            border: none;
+            color: #ffffff;
+            font-family: inherit;
+            font-size: inherit;
+            flex-grow: 1;
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+
+<div id="terminal-screen">
+    <div id="output">
+        Microsoft Windows [Version 6.0.6000]<br>
+        Copyright (c) 2006 Microsoft Corporation. All rights reserved.<br><br>
+        Commands: <b>dir</b>, <b>type DOAE_BioHazard_Override.bat</b>, <b>cls</b><br>
+        Audio Controls: <b>play</b>, <b>stop</b><br><br>
+    </div>
+    <div class="input-line">
+        <span class="prompt">C:\Users\DOAE_Admin&gt; </span>
+        <input type="text" id="cmd-input" autofocus autocomplete="off" spellcheck="false">
+    </div>
+</div>
+
+<!-- YOUR UNIQUE CUSTOM 2006 AUDIO FILE LINKED HERE -->
+<audio id="storySound" src="story.mp3" loop></audio>
+
+<script>
+const input = document.getElementById('cmd-input');
+const output = document.getElementById('output');
+const soundTrack = document.getElementById('storySound');
+
+let weaponReady = false;
+let audioActive = false;
+
+document.addEventListener('click', () => input.focus());
+
+input.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+        const command = input.value.trim();
+        printLine(`C:\\Users\\DOAE_Admin&gt; ${command}`);
+        input.value = '';
+        
+        processCommand(command);
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+});
+
+function printLine(text) {
+    output.innerHTML += text + '<br>';
+}
+
+function processCommand(cmd) {
+    const lowerCmd = cmd.toLowerCase();
+    
+    if (lowerCmd === 'dir') {
+        printLine('<br> Volume in drive C has no label.<br> Directory of C:\\DOAE_Systems\\Scripts<br><br>' +
+                  '10/24/2006  05:12 AM    &lt;DIR&gt;          .<br>' +
+                  '10/24/2006  05:12 AM    &lt;DIR&gt;          ..<br>' +
+                  '10/24/2006  03:45 AM             1,154 DOAE_BioHazard_Override.bat<br><br>' +
+                  '               1 File(s)          1,154 bytes<br>');
+    } 
+    else if (lowerCmd === 'type doae_biohazard_override.bat') {
+        runScript();
+    } 
+    else if (lowerCmd === 'play') {
+        audioActive = true;
+        soundTrack.play().catch(e => printLine("<span class='error-text'>Error: Click the black screen once first, then type play so Chrome allows the sound.</span>"));
+        printLine('<br><span class="audio-text">[BROADCASTING AUDIO FILE: 2006%2F9%2F14 (1).mp3]<br>' +
+                  'Megaphone signal activated. Sub-vocal tracking frequency is running down Rail Track 04.<br>' +
+                  'The 60-foot blind worm has detected the sound vibrations and is approaching! Type "fire"!</span><br>');
+    }
+    else if (lowerCmd === 'stop') {
+        audioActive = false;
+        soundTrack.pause();
+        soundTrack.currentTime = 0;
+        printLine('<br><span class="audio-text">Audio signal terminated. The red floodwaters go dead silent.</span><br>');
+    }
+    else if (lowerCmd === 'fire') {
+        if (!weaponReady) {
+            printLine('<br><span class="error-text">ERROR: CATHODE EMITTER CORES OFFLINE. Run DOAE_BioHazard_Override.bat first.</span><br>');
+        } else if (!audioActive) {
+            printLine('<br><span class="error-text">ERROR: DISCHARGE DENIED. Target out of range. You must type "play" to lure the creature onto the tracks.</span><br>');
+        } else {
+            fireWeapon();
+        }
+    }
+    else if (lowerCmd === 'cls') {
+        output.innerHTML = '';
+    } 
+    else if (lowerCmd === '') {
+        // Do nothing
+    } 
+    else {
+        printLine(`'${cmd}' is not recognized as an internal or external command,<br>operable program or batch file.<br>`);
+    }
+}
+
+function runScript() {
+    weaponReady = true;
+    printLine('<br><div class="error-text">====================================================================<br>' +
+              ' DEPARTMENT OF ADVANCED ENERGIES (D.O.A.E.) - BIO-SECURITY PROTOCOL<br>' +
+              '====================================================================<br>' +
+              'Weapon Platform "Cathode Ray Emitter" energized on Track 04.<br>' +
+              'BEAM CORE CHANNELS STATUS: <span class="weapon-text">READY TO DISCHARGE.</span><br>' +
+              'Type <b>play</b> to activate the acoustic beacon megaphone lure.<br>' +
+              '====================================================================</div><br>');
+}
+
+function fireWeapon() {
+    soundTrack.pause();
+    soundTrack.currentTime = 0;
+    audioActive = false;
+    printLine('<br><div class="weapon-text">====================================================================<br>' +
+              'ENGAGING ELECTRON BEAM DIRECT DISCHARGE NOW...<br>' +
+              '--------------------------------------------------------------------<br>' +
+              '[!!! SUCCESS !!!] HIGH-VOLTAGE RADIATION ARC SUSTAINED.<br>' +
+              'The electron beam punches straight through the blood-mist, flash-boiling the liquid.<br>' +
+              'The 60-foot worm catches fire instantly. Core temperature exceeding 2,500°C.<br>' +
+              'ORGANISM THREAT LEVEL: TERMINATED / ENTIRELY ASHED ON THE RAIL LINES.<br>' +
+              '====================================================================</div><br>');
+}
+</script>
+</body>
+</html>
