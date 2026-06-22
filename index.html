@@ -165,3 +165,39 @@ function fireWeapon() {
 </script>
 </body>
 </html>
+<div class="terminal">
+  <div id="log-output">Type 'dmesg' or 'journalctl -b' to view the boot logs...</div>
+  <div class="input-line">
+    <span>guest@sys-term:~$</span>
+    <input type="text" id="terminal-input" autofocus autocomplete="off" />
+  </div>
+</div>
+/* Paste this at the bottom of your existing CSS file */
+.terminal {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+#log-output {
+  white-space: pre-wrap;
+  line-height: 1.4;
+  margin-bottom: 10px;
+}
+
+.input-line {
+  display: flex;
+  gap: 10px;
+}
+
+#terminal-input {
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-family: inherit;
+  font-size: inherit;
+  outline: none;
+  flex-grow: 1;
+}
+
+.log-ok { color: #00ff00; font-weight: bold; }
+.log-time { color: #888888; }
